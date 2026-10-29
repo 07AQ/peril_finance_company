@@ -1,1 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peril Micro Credit® - Local Portal</title>
+    <style>
+        :root { --primary: #0f2027; --secondary: #203a43; --gold: #d4af37; --light: #f8f9fa; --dark: #2c3e50; }
+        body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background: #eef2f3; margin: 0; padding: 0; color: var(--dark); }
+        .logo-emblem { width: 55px; height: 55px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); border: 3px solid var(--gold); display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 26px; font-weight: bold; margin: 0 auto 10px auto; }
+        
+        /* LOGIN FRAME */
+        #authSection { background: linear-gradient(135deg, #0f2027, #2c5364); height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .auth-card { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); width: 100%; max-width: 400px; text-align: center; }
+        .form-group { text-align: left; margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 14px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #cccccc; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        
+        /* DASHBOARD FRAME */
+        #dashboardSection { display: none; padding: 25px; }
+        .dashboard-header { background: white; padding: 20px 30px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .grid-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
+        .panel-card { background: white; padding: 30px; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        th { background-color: var(--primary); color: white; padding: 12px; }
+        td { padding: 12px; border-bottom: 1px solid #eef2f3; }
+        table { width: 100%; border-collapse: collapse; }
+        .action-btn { background: var(--gold); color: #000; border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
 
+        /* PRINT VIEWS */
+        #printArea { display: none; background: white; padding: 40px; }
+        @media print {
+            body * { display: none !important; }
+            #printArea, #printArea * { display: block !important; }
+            #printArea table { display: table !important; width: 100% !important; border: 1px solid #000 !important; }
+            #printArea th, #printArea td { display: table-cell !important; border: 1px solid #000 !important; padding: 10px !important; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- PHASE 1: LOGIN ENVIRONMENT -->
+<div id="authSection">
+    <div class="auth-card">
+        <div class="logo-emblem">R®</div>
+        <h2>Peril Micro Credit®</h2>
+        <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 25px;">Rudrapur, U.S. Nagar | info@perilmicrocredit.com</div>
+        
+        <div class="form-group">
+            <label>Admin User ID</label>
+            <input type="text" id="loginUser" placeholder="Enter 'admin'">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="Enter '12345'">
+        </div>
+        <button class="btn-primary" onclick="checkLocalLogin()">Secure Portal Login</button>
+        <a href="#" style="display:block; margin-top:15px; color:#2c5364; font-size:13px;" onclick="triggerLocalOTP()">Forgot Password via Mobile OTP?</a>
+    </div>
+</div>
+
+<!-- PHASE 2: CORE DASHBOARD SOFTWARE -->
+<div id="dashboardSection">
+    <div class="dashboard-header">
+        <div style="display:flex; align-items:center; gap:15px;">
+            <div class="logo-emblem" style="margin:0;">R®</div>
+            <div>
+                <h2 style="margin:0; color:var(--primary);">Peril Micro Credit®</h2>
+                <p style="margin:4px 0 0 0; color:#666; font-size:13px;">Rudrapur, U.S. Nagar, Uttarakhand | Mob: 8077935959 | info@perilmicrocredit.com</p>
+            </div>
+        </div>
+        <button class="action-btn" style="background:#e74c3c; color:white; padding:10px 20px;" onclick="window.location.reload()">Logout</button>
+    </div>
+
+    <div class="grid-layout">
+        <!-- DATA INPUT REGISTRATION -->
+        <div class="panel-card">
+            <h3 style="margin-top:0; color:var(--primary); border-bottom:2px solid #f8f9fa; padding-bottom:12px;">New Loan Entry</h3>
+            
+            <div class="form-group">
+                <label>Branch / Prefix</label>
+                <select id="branchPrefix" onchange="generateLocalID()">
+                    <option value="PMCR">PMCR (Rudrapur)</option>
+                    <option value="PMCK">PMCK (Kichha)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Customer ID (Self-Change Allowed)</label>
+                <input type="text" id="generatedID" style="font-weight:bold; background:#fffcf0; border:1px solid var(--gold);">
+            </div>
+            <div class="form-group">
+                <label>Customer Name</label>
+                <input type="text" id="cName">
+            </div>
+            <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="text" id="cMobile">
+            </div>
+            <div class="form-group">
+                <label>Loan Amount (₹)</label>
+                <input type="number" id="cAmount">
+            </div>
+            <div class="form-group">
+                <label>Loan Months (0-36 Max)</label>
+                <input type="number" id="cTenure" min="0" max="36">
+            </div>
+            <div class="form-group">
+                <label>Capital Disbursal Date</label>
+                <input type="date" id="cDisbursalDate">
+            </div>
+            <div class="form-group">
+                <label>First EMI Date</label>
+                <input type="date" id="cEmiStartDate">
+            </div>
+            <button class="btn-primary" onclick="saveLocalCustomer()">Save & Process Account</button>
+        </div>
+
+        <!-- PORTFOLIO LEDGER SYSTEM -->
+        <div class="panel-card">
+            <h3 style="margin-top:0; color:var(--primary); border-bottom:2px solid #f8f9fa; padding-bottom:12px;">Active Portfolios</h3>
+            <table id="ledgerTable">
+                <thead>
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Name</th>
+                        <th>Mobile</th>
+                        <th>Amount</th>
+                        <th>Tenure</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- HIDDEN SYSTEM PASSBOOK GRAPHIC -->
+<div class="print-view" id="printArea">
+    <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:20px;">
+        <div style="font-size:28px; font-weight:bold;">Peril Micro Credit®</div>
+        <div style="font-size:13px;">Rudrapur, U.S. Nagar, Uttarakhand | Helpline: 8077935959 | info@perilmicrocredit.com</div>
+    </div>
+    <h3 style="text-align:center; text-decoration:underline;">CUSTOMER COLLECTION SHEET / KIST PASSBOOK</h3>
+    <table style="width:100%; margin-bottom:20px; line-height:2;">
+        <tr><td><strong>Account ID:</strong> <span id="pId"></span></td><td><strong>Holder Name:</strong> <span id="pName"></span></td></tr>
+        <tr><td><strong>Mobile:</strong> <span id="pMobile"></span></td><td><strong>Disbursal Date:</strong> <span id="pDisbursal"></span></td></tr>
+        <tr><td><strong>Loan Amount:</strong> ₹<span id="pAmt"></span></td><td><strong>Tenure:</strong> <span id="pMonths"></span> Months</td></tr>
+    </table>
+    <table>
+        <thead>
+            <tr>
+                <th>Kist No.</th>
+                <th>Due Date</th>
+                <th>EMI Amount</th>
+                <th>Actual Jama Date</th>
+                <th>Late Fine (₹)</th>
+                <th>Officer Sign</th>
+            </tr>
+        </thead>
+        <tbody id="printBody"></tbody>
+    </table>
+</div>
+
+<script>
+    let counters = { PMCR: 1, PMCK: 1 };
+    let usedMobiles = [];
+    let customerList = [];
+
+    function generateLocalID() {
+        let prefix = document.getElementById('branchPrefix').value;
+        let num = String(counters[prefix]).padStart(4, '0');
+        document.getElementById('generatedID').value = prefix + num;
+    }
+
+    function checkLocalLogin() {
+        let u = document.getElementById('loginUser').value;
+        let p = document.getElementById('loginPassword').value;
+        if(u.trim().toLowerCase() === 'admin' && p.trim() === '12345') {
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('dashboardSection').style.display = 'block';
+            generateLocalID();
+        } else {
+            alert("Wrong ID or Password! Please enter admin and 12345.");
+        }
+    }
+
+    function triggerLocalOTP() {
+        let ph = prompt("Enter primary admin mobile number:");
+        if (ph === "8077935959") {
+            let otp = prompt("Enter 6-digit OTP sent to 8077935959:");
+            if(otp && otp.length === 6) {
+                prompt("Set new password:");
+                alert("Password updated successfully.");
+            } else { alert("Invalid OTP."); }
